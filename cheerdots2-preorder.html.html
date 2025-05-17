@@ -1,0 +1,148 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheerdots2 Pre-Order Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFF9C4 0%, #FFD700 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-6 max-w-4xl">
+        <h1 class="text-3xl font-bold text-center mb-4 text-gray-800">Cheerdots2 Pre-Order Form</h1>
+        <!-- Main Title Picture -->
+        <div class="mb-6 text-center">
+            <img src="https://product.hstatic.net/1000069970/product/48_03a4615c13114999ba7e0be4110c33ec_1024x1024.png" alt="Cheerdots2 Main" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+        </div>
+        <p class="text-center mb-4 text-gray-700">Product: <a href="https://vaithuhay.com/products/chuot-da-nang-cheerdots2-4in1" class="text-blue-600 hover:underline" target="_blank">Cheerdots2 4-in-1</a></p>
+
+        <form class="bg-white p-6 rounded-lg shadow-md">
+            <!-- Distributor Info -->
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Distributor Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="company_name" class="block text-sm font-medium text-gray-700">Company Name *</label>
+                    <input type="text" id="company_name" name="company_name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email *</label>
+                    <input type="email" id="email" name="email" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                </div>
+            </div>
+
+            <!-- Pre-Order Details -->
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Pre-Order Details</h2>
+            <p class="text-sm text-gray-600 mb-4">Enter the quantity for each version and color you wish to pre-order.</p>
+            <div class="mb-6">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-yellow-100">
+                            <th class="p-2 text-left text-sm font-medium text-gray-700">Version</th>
+                            <th class="p-2 text-left text-sm font-medium text-gray-700">MSRP (VND)</th>
+                            <th class="p-2 text-left text-sm font-medium text-gray-700">Black</th>
+                            <th class="p-2 text-left text-sm font-medium text-gray-700">Silver</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="p-2">Basic</td>
+                            <td class="p-2">1,150,000 - 1,300,000</td>
+                            <td class="p-2">
+                                <input type="number" name="quantity_basic_black" min="0" placeholder="0" class="w-full p-2 border border-gray-300 rounded-md">
+                            </td>
+                            <td class="p-2">
+                                <input type="number" name="quantity_basic_silver" min="0" placeholder="0" class="w-full p-2 border border-gray-300 rounded-md">
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-2">Recording</td>
+                            <td class="p-2">1,250,000 - 1,450,000</td>
+                            <td class="p-2">
+                                <input type="number" name="quantity_recording_black" min="0" placeholder="0" class="w-full p-2 border border-gray-300 rounded-md">
+                            </td>
+                            <td class="p-2">
+                                <input type="number" name="quantity_recording_silver" min="0" placeholder="0" class="w-full p-2 border border-gray-300 rounded-md">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-2">Advance</td>
+                            <td class="p-2">1,650,000 - 1,800,000</td>
+                            <td class="p-2">
+                                <input type="number" name="quantity_advance_black" min="0" placeholder="0" class="w-full p-2 border border-gray-300 rounded-md">
+                            </td>
+                            <td class="p-2">
+                                <input type="number" name="quantity_advance_silver" min="0" placeholder="0" class="w-full p-2 border border-gray-300 rounded-md">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Product Images -->
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Product Images</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="text-center">
+                    <img src="https://product.hstatic.net/1000069970/product/45_f1502b41ceac43909769cb7483702480_1024x1024.png" alt="Cheerdots2 Basic" class="w-full h-32 object-contain rounded-md mb-2">
+                    <p class="text-sm text-gray-700">Basic Version</p>
+                </div>
+                <div class="text-center">
+                    <img src="https://product.hstatic.net/1000069970/product/49_25b24e263c0b45a4b38e5c66dcec1e55_1024x1024.png" alt="Cheerdots2 Recording" class="w-full h-32 object-contain rounded-md mb-2">
+                    <p class="text-sm text-gray-700">Recording Version</p>
+                </div>
+                <div class="text-center">
+                    <img src="https://product.hstatic.net/1000069970/product/_1920_x_1920_px___5__cf0e123f016b4670bc2e08bafcfe51bb_1024x1024.png" alt="Cheerdots2 Advance" class="w-full h-32 object-contain rounded-md mb-2">
+                    <p class="text-sm text-gray-700">Advance Version</p>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="button" onclick="window.location.href='https://vaithuhay.com/products/chuot-da-nang-cheerdots2-4in1'" class="bg-yellow-500 text-white px-6 py-2 rounded-md hover:bg-yellow-600">Submit Pre-Order</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
